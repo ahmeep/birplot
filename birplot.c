@@ -64,8 +64,6 @@ int main()
 	watch_file("assets/shaders/plot.vert", shader_file_updated_callback);
 	watch_file("assets/shaders/plot.frag", shader_file_updated_callback);
 
-	struct ssbo cpu_calculation_buffer = generate_ssbo(1);
-
 	struct text_renderer helvetica_text = {};
 	create_text_renderer(&helvetica_text, "assets/fonts/helvetica.txt",
 			     "assets/fonts/helvetica.png");
@@ -95,7 +93,6 @@ int main()
 		bind_vao(vertex_array);
 
 		use_shader(plot_shader);
-		bind_ssbo(cpu_calculation_buffer);
 		shader_set_int(plot_shader, "width", width);
 		shader_set_int(plot_shader, "height", height);
 		shader_set_float(plot_shader, "time", glfwGetTime());
