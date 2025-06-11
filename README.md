@@ -21,9 +21,13 @@ float func(vec2 p) {
 ```
 This is going to result as $f(x, y) = x^2 + y^2 - 1 = 0$ which is a circle with radius 1.
 
+## Keybindings
+- `F`: Toggle FPS indicator
+- `C`: Toggle coordinate system
+
 # TODO
-- [ ] Coordinate axes
-- [ ] Keybindings for disabling texts and coordinate axes
+- [x] Coordinate axes
+- [x] Keybindings for disabling texts and coordinate axes
 - [ ] Support multiple functions to be plotted at the same time
 - [ ] Use another method to define mathematical functions instead of modifying the fragment shader
 
