@@ -58,7 +58,7 @@ vec2 grad_func(vec2 p) {
 }
 
 void main() {
-    const float thickness = 0.01;
+    const float thickness = 0.03;
     float f = abs(func(pos)) / length(grad_func(pos));
 
     float alpha = 1.0 - smoothstep(0, thickness / 3, f) - smoothstep(2 * thickness / 3, thickness, f);
