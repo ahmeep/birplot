@@ -23,6 +23,7 @@ int shaders_should_update;
 const char *updated_file;
 
 int FPS_ENABLED = 1;
+int DRAW_COORDINATE_SYSTEM = 1;
 
 void shader_file_updated_callback(const char *updated)
 {
@@ -36,6 +37,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
 {
 	if (key == GLFW_KEY_F && action == GLFW_PRESS) {
 		FPS_ENABLED *= -1;
+	}
+	if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+		DRAW_COORDINATE_SYSTEM *= -1;
 	}
 }
 
@@ -115,11 +119,13 @@ int main()
 
 		bind_vao(vertex_array);
 
-		use_shader(cartesian_shader);
-		shader_set_int(cartesian_shader, "width", width);
-		shader_set_int(cartesian_shader, "height", height);
-		shader_set_float(cartesian_shader, "time", time);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		if (DRAW_COORDINATE_SYSTEM == 1) {
+			use_shader(cartesian_shader);
+			shader_set_int(cartesian_shader, "width", width);
+			shader_set_int(cartesian_shader, "height", height);
+			shader_set_float(cartesian_shader, "time", time);
+			glDrawArrays(GL_TRIANGLES, 0, 3);
+		}
 
 		use_shader(plot_shader);
 		shader_set_int(plot_shader, "width", width);
