@@ -21,10 +21,21 @@ uint32_t plot_shader;
 int plot_shader_should_update;
 const char *updated_file;
 
+int FPS_ENABLED = 1;
+
 void shader_file_updated_callback(const char *updated)
 {
 	updated_file = updated;
 	plot_shader_should_update = 1;
+}
+
+
+void key_callback(GLFWwindow *window, int key, int scancode, int action,
+		  int mods)
+{
+	if (key == GLFW_KEY_F && action == GLFW_PRESS) {
+		FPS_ENABLED *= -1;
+	}
 }
 
 int main()
@@ -39,6 +50,8 @@ int main()
 
 	glfwMakeContextCurrent(window);
 	gladLoadGL(glfwGetProcAddress);
+
+	glfwSetKeyCallback(window, key_callback);
 
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_BLEND);
@@ -98,10 +111,13 @@ int main()
 		shader_set_float(plot_shader, "time", glfwGetTime());
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
-		vec2 end = {};
-		draw_textf(&helvetica_text, (vec2){10.0f, 10.0f}, 0.30f,
-			   (vec4){1.0f, 1.0f, 1.0f, 1.0f}, end, L"FPS: %f",
-			   1 / dt);
+		vec2 end = {0.0f, 0.0f};
+		if (FPS_ENABLED == 1) {
+			draw_textf(&helvetica_text, (vec2){10.0f, 10.0f}, 0.30f,
+				   (vec4){1.0f, 1.0f, 1.0f, 1.0f}, end,
+				   L"FPS: %f", 1 / dt);
+		}
+
 		if (update_notice > 0) {
 			update_notice -= dt;
 			draw_textf(&helvetica_text,
