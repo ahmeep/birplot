@@ -65,5 +65,5 @@ void main() {
     vec3 bg = vec3(0.0);
     vec3 fg = vec3(202.0 / 255.0, 6.0 / 255.0, 161.0 / 255.0);
     vec3 color = mix(bg, fg, alpha);
-    fragColor = vec4(color, 1.0);
+    fragColor = vec4(color, alpha);
 }

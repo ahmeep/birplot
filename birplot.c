@@ -18,7 +18,8 @@ mat4 projection;
 double dt, last;
 
 uint32_t plot_shader;
-int plot_shader_should_update;
+uint32_t cartesian_shader;
+int shaders_should_update;
 const char *updated_file;
 
 int FPS_ENABLED = 1;
@@ -26,7 +27,7 @@ int FPS_ENABLED = 1;
 void shader_file_updated_callback(const char *updated)
 {
 	updated_file = updated;
-	plot_shader_should_update = 1;
+	shaders_should_update = 1;
 }
 
 
@@ -67,7 +68,7 @@ int main()
 
 	allocate_vbo(vertex_buffer, sizeof(vertices), vertices, AO_IMMUTABLE);
 
-	uint32_t plot_shader = 0;
+	plot_shader = 0;
 	load_shader_file(&plot_shader, "assets/shaders/plot.vert",
 			 "assets/shaders/plot.frag");
 	if (plot_shader == 0) {
@@ -77,6 +78,12 @@ int main()
 	watch_file("assets/shaders/plot.vert", shader_file_updated_callback);
 	watch_file("assets/shaders/plot.frag", shader_file_updated_callback);
 
+	cartesian_shader = 0;
+	load_shader_file(&cartesian_shader, "assets/shaders/plot.vert",
+			 "assets/shaders/cartesian.frag");
+	watch_file("assets/shaders/cartesian.frag",
+		   shader_file_updated_callback);
+
 	struct text_renderer helvetica_text = {};
 	create_text_renderer(&helvetica_text, "assets/fonts/helvetica.txt",
 			     "assets/fonts/helvetica.png");
@@ -85,11 +92,14 @@ int main()
 	double update_notice = 0;
 
 	while (!glfwWindowShouldClose(window)) {
-		if (plot_shader_should_update) {
+		if (shaders_should_update) {
 			reload_shader_file(&plot_shader,
 					   "assets/shaders/plot.vert",
 					   "assets/shaders/plot.frag");
-			plot_shader_should_update = 0;
+			reload_shader_file(&cartesian_shader,
+					   "assets/shaders/plot.vert",
+					   "assets/shaders/cartesian.frag");
+			shaders_should_update = 0;
 			update_notice = 3.0;
 		}
 		double time = glfwGetTime();
@@ -105,10 +115,16 @@ int main()
 
 		bind_vao(vertex_array);
 
+		use_shader(cartesian_shader);
+		shader_set_int(cartesian_shader, "width", width);
+		shader_set_int(cartesian_shader, "height", height);
+		shader_set_float(cartesian_shader, "time", time);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
 		use_shader(plot_shader);
 		shader_set_int(plot_shader, "width", width);
 		shader_set_int(plot_shader, "height", height);
-		shader_set_float(plot_shader, "time", glfwGetTime());
+		shader_set_float(plot_shader, "time", time);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		vec2 end = {0.0f, 0.0f};
