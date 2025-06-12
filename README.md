@@ -11,15 +11,15 @@ For downloading **cglm**, look into this [issue](https://github.com/recp/cglm/is
 This project uses Makefiles. So just run `make` and your executable will be at `build/birplot`.
 
 # Usage
-To modify the function go into `assets/shaders/plot.frag` and edit the function `float func(vec2 p)`. The components of `p` are in the interval $\left[ -1, 1 \right]$ birplot supports live reload of shaders, just save the file and the program will detect and reload the shaders.
-
-Also plotting will happen where `float func(vec2 p)` is 0. So your function must be in form of $f(x, y) = 0$. For example
+You can change what is being plotted by modifying `birplot.glsl`. The inputs x and y are between -1 and 1. Time variable contains how many seconds has been passed since the program started. The defined function will be plotted where it's value becomes 0. For example if you are trying to plot $y = sin(x)$ the appropriate code will be
 ```glsl
-float func(vec2 p) {
-    return p.x*p.x + p.y*p.y - 1;
+float userFunction(vec2 point) {
+    return point.y - sin(point.x);
 }
 ```
-This is going to result as $f(x, y) = x^2 + y^2 - 1 = 0$ which is a circle with radius 1.
+
+> [!NOTE]
+> Right now some discontinuous functions have some distortion while plotting.
 
 ## Keybindings
 - `F`: Toggle FPS indicator
@@ -28,6 +28,7 @@ This is going to result as $f(x, y) = x^2 + y^2 - 1 = 0$ which is a circle with 
 # TODO
 - [x] Coordinate axes
 - [x] Keybindings for disabling texts and coordinate axes
-- [ ] Support multiple functions to be plotted at the same time
+- [x] Support multiple functions to be plotted at the same time
 - [ ] Use another method to define mathematical functions instead of modifying the fragment shader
+- [ ] Fix distortions when plotting a discontinuous function
 
